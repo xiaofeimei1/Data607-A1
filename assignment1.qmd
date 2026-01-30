@@ -1,0 +1,33 @@
+---
+title: "Assignment1"
+author: "XiaoFei Mei"
+format: html
+editor: visual
+---
+
+## Introduction
+
+This is a analysis of dataset on records of diamonds. From Kaggle, with URL: <https://www.kaggle.com/datasets/shivam2503/diamonds?select=diamonds.csv>.
+
+It has total 11 columns that show different characteristics ofdiamonds, such as color, carates, weight, cut grade, price, etc. My goal is to produce a clear, data-driven report shows which characteristic has the most positive relationship to the price of diamonds.
+
+My plan is to first perform exploratory data anlysis to understand the distribution, data types of the 11 columns. To check if there are any missing data, outliers for each column.Then build some modeling that can identify most influential factos. In the end to use visualization tools present those factors.
+
+I anticipate challenges includs extrem outliers since diamonds prices could be extrem on both ends that it would be difficult to use them to find common factors that affect price. Or there could be no single factors that show dominant relationship with price, rather a combination of different factos that nearly equally important. It would be difficult for me to present a strong case on factors affect prices the most.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
