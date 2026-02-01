@@ -9,25 +9,168 @@ editor: visual
 
 This is a analysis of dataset on records of diamonds. From Kaggle, with URL: <https://www.kaggle.com/datasets/shivam2503/diamonds?select=diamonds.csv>.
 
-It has total 11 columns that show different characteristics ofdiamonds, such as color, carates, weight, cut grade, price, etc. My goal is to produce a clear, data-driven report shows which characteristic has the most positive relationship to the price of diamonds.
+It has total 11 columns that show different characteristics of diamonds, such as color, carats, weight, cut grade, price, etc. My goal is to produce a clear, data-driven report shows which characteristic has the most positive relationship to the price of diamonds.
 
-My plan is to first perform exploratory data anlysis to understand the distribution, data types of the 11 columns. To check if there are any missing data, outliers for each column.Then build some modeling that can identify most influential factos. In the end to use visualization tools present those factors.
+My plan is to first perform exploratory data analysis to understand the distribution, data types of the 11 columns. To check if there are any missing data, outliner for each column.Then build some modeling that can identify most influential factors. In the end to use visualization tools present those factors.
 
-I anticipate challenges includs extrem outliers since diamonds prices could be extrem on both ends that it would be difficult to use them to find common factors that affect price. Or there could be no single factors that show dominant relationship with price, rather a combination of different factos that nearly equally important. It would be difficult for me to present a strong case on factors affect prices the most.
+I anticipate challenges includes extreme outlines since diamonds prices could be extreme on both ends that it would be difficult to use them to find common factors that affect price. Or there could be no single factors that show dominant relationship with price, rather a combination of different factors that nearly equally important. It would be difficult for me to present a strong case on factors affect prices the most.
 
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+## Data Exploratory 
 
 ```{r}
-1 + 1
-```
-
-You can add options to executable code like this
-
-```{r}
+#install/load libraries
 #| echo: false
-2 * 2
+#| warning: false
+#| message: false
+
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(ggplot2)
+  library(skimr)
+  library(DataExplorer)
+  library(corrplot)
+  library(GGally)
+  library(psych)
+  library(moments)
+})
+
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+Loading Data, and initial check on columns to see if there are any missing column and values types for each columns.
+
+```{r}
+
+file_url <- "https://raw.githubusercontent.com/xiaofeimei1/Data607-A1/refs/heads/main/diamonds.csv"
+data <- readr::read_csv(file_url, show_col_types = FALSE)
+
+dim(data)
+names(data)
+head(data)
+sapply(data, class)
+colSums(is.na(data))
+str(data)
+```
+
+From above result, I can see there are no missing values for all columns. Looks like it has diamonds dataset plus an auto-generated index column start with value of 1.
+
+As for data types, it shows we have numeric for measurements, character for categorical.
+
+## Data Analysis
+
+For columns with numeric values, I will use plot to show the relationship of the characteristics with price.
+
+From the charts below, we can observe a general trend: higher carat weight typically results in a higher price. Similar patterns are evident for other characteristics such as x, y, and z measurements, as well as table percentage.
+
+This trend, however, does not apply to depth percentage. This is logical from an industry standpoint, as diamonds are primarily evaluated based on their face-up appearance. For instance:
+
+-   If two diamonds share identical characteristics except for carat weight, the larger diamond will generally command a higher price.
+
+-   If two diamonds have the same carat weight, but one has a larger table percentage and a smaller depth, it will appear larger when viewed from above. As a result, it is likely to be valued slightly higher.
+
+```{r}
+#| message: false
+#| warning: false
+
+#  carat vs price 
+p1 <- ggplot(data, aes(x = carat, y = price)) +
+  geom_point(alpha = 0.1, size = 0.5) +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(title = "Price vs Carat",
+       x = "Carat",
+       y = "Price") +
+  theme_minimal()
+
+# measurements vs price
+p2 <- ggplot(data, aes(x = x, y = price)) +
+  geom_point(alpha = 0.1, size = 0.5) +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(title = "Price vs X (Length)",
+       x = "X (mm)",
+       y = "Price") +
+  theme_minimal()
+
+p3 <- ggplot(data, aes(x = y, y = price)) +
+  geom_point(alpha = 0.1, size = 0.5) +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(title = "Price vs Y (Width)",
+       x = "Y (mm)",
+       y = "Price") +
+  theme_minimal()
+
+p4 <- ggplot(data, aes(x = z, y = price)) +
+  geom_point(alpha = 0.1, size = 0.5) +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(title = "Price vs Z (Depth)",
+       x = "Z (mm)",
+       y = "Price") +
+  theme_minimal()
+
+# table and depth  vs price
+p5 <- ggplot(data, aes(x = depth, y = price)) +
+  geom_point(alpha = 0.1, size = 0.5) +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(title = "Price vs Depth %",
+       x = "Depth (%)",
+       y = "Price") +
+  theme_minimal()
+
+p6 <- ggplot(data, aes(x = table, y = price)) +
+  geom_point(alpha = 0.1, size = 0.5) +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(title = "Price vs Table %",
+       x = "Table (%)",
+       y = "Price") +
+  theme_minimal()
+
+# print all plots
+print(p1)
+print(p2)
+print(p3)
+print(p4)
+print(p5)
+print(p6)
+
+```
+
+Here are the additional analysis to show if and how columns with categorical values influence the price. Those columns include: cut, color and clarity.
+
+```{r}
+
+categorical_cols <- c("cut", "color", "clarity")
+
+
+
+# 3. Interaction between categorical variables and price
+library(patchwork)
+
+# Cut vs Color interaction
+p_interaction1 <- ggplot(data, aes(x = cut, y = price, fill = color)) +
+  geom_boxplot() +
+  labs(title = "Price by Cut and Color",
+       x = "Cut",
+       y = "Price") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Cut vs Clarity interaction  
+p_interaction2 <- ggplot(data, aes(x = cut, y = price, fill = clarity)) +
+  geom_boxplot() +
+  labs(title = "Price by Cut and Clarity",
+       x = "Cut",
+       y = "Price") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+print(p_interaction1)
+print(p_interaction2)
+
+
+
+
+```
+
+## Conclusion 
+
+```{r}
+
+```
