@@ -2,7 +2,7 @@
 title: "Assignment1"
 author: "XiaoFei Mei"
 format: html
-editor: visual
+date: 2.1.2026
 ---
 
 ## Introduction
@@ -38,6 +38,10 @@ suppressPackageStartupMessages({
 
 Loading Data, and initial check on columns to see if there are any missing column and values types for each columns.
 
+From results shown below, I can see there are no missing values for all columns. Looks like it has diamonds data set plus an auto-generated index column start with value of 1.
+
+As for data types, it shows we have numeric for measurements, character for categorical.
+
 ```{r}
 
 file_url <- "https://raw.githubusercontent.com/xiaofeimei1/Data607-A1/refs/heads/main/diamonds.csv"
@@ -50,10 +54,6 @@ sapply(data, class)
 colSums(is.na(data))
 str(data)
 ```
-
-From above result, I can see there are no missing values for all columns. Looks like it has diamonds dataset plus an auto-generated index column start with value of 1.
-
-As for data types, it shows we have numeric for measurements, character for categorical.
 
 ## Data Analysis
 
@@ -132,7 +132,11 @@ print(p6)
 
 ```
 
-Here are the additional analysis to show if and how columns with categorical values influence the price. Those columns include: cut, color and clarity. sdf
+Let's furthur examines how categorical variables—specifically cut, color and clarity influence diamond pricing.
+
+As plots shown below, when compare cut and color, premium cut diamonds generally related to higher prices, particularly in the D,E and F color range, with all sampled diamonds exceeding the \$10,000 price threshold.
+
+When combining cut and clarity, while VVS2 clarity combined with premium cuts shows higher price points, these samples are relatively rare as not many diamonds fit in those category. Interestingly, some high priced diamonds appear in the I1 clarity range even with fair cuts, suggesting exceptional factors such as size and weight of the diamonds influence these outlines.
 
 ```{r}
 
@@ -169,8 +173,14 @@ print(p_interaction2)
 
 ```
 
-## Conclusion
-
 ```{r}
 
 ```
+
+## Conclusion
+
+This analysis confirms that carat weight and measurements have a clear trend that could influence diamond pricing. They play a more substantial role than categorical variables such as cut, color, and clarity. While premium combinations of these categorical features can elevate prices, their impact appears secondary to the fundamental dimensions of the diamond itself.
+
+If we want further analysis to draw a clear conclusion on how cut, color and clarity affect price. We need to better isolate the effects of categorical variables on pricing, find a larger sample size to ensure adequate representation across all categorical combinations. We would need to compare diamonds with same carat weight and measurements only differ in clarity , cut and color. This approach would provide clearer insight into how cut, color, and clarity influence prices when diamonds are otherwise comparable in size and dimensions.
+
+Another thought about this study, diamonds price fluctuate as price is subject to market volatility that could be influenced by several external factors, such as seasonal demand, geopolitical and trade policies and global economic conditions. To strengthen future analysis, ideal data sets should include time-adjusted pricing, or includes price record with dates that are as close as possible. Such enhancements would help isolate the intrinsic values factors ( carat, cut, color, clarity etc\_ from external market influences, providing more robust insights into diamond price determining factors.
