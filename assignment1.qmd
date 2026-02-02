@@ -15,7 +15,7 @@ My plan is to first perform exploratory data analysis to understand the distribu
 
 I anticipate challenges includes extreme outlines since diamonds prices could be extreme on both ends that it would be difficult to use them to find common factors that affect price. Or there could be no single factors that show dominant relationship with price, rather a combination of different factors that nearly equally important. It would be difficult for me to present a strong case on factors affect prices the most.
 
-## Data Exploratory 
+## Data Exploratory
 
 ```{r}
 #install/load libraries
@@ -132,7 +132,7 @@ print(p6)
 
 ```
 
-Here are the additional analysis to show if and how columns with categorical values influence the price. Those columns include: cut, color and clarity.
+Here are the additional analysis to show if and how columns with categorical values influence the price. Those columns include: cut, color and clarity. sdf
 
 ```{r}
 
@@ -169,7 +169,7 @@ print(p_interaction2)
 
 ```
 
-## Conclusion 
+## Conclusion
 
 ```{r}
 
